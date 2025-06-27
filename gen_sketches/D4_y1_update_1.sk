@@ -1,0 +1,46 @@
+include "math.skh";
+
+float[6]  h(float x, float y, float v, float a, float theta, float dt) { return { x ,  -  (y ), v , a ,  -  (theta ), dt  };}
+float[6]  C(float x, float y, float v, float a, float theta, float dt) { return { x , (( sin(theta )  * (v  * dt )) + y ), v , a , theta , dt  };}
+
+generator float g_x(float x, float y, float v, float a, float theta, float dt) {
+    return {| x |};
+}
+
+generator float g_y(float x, float y, float v, float a, float theta, float dt) {
+    return {| -y |   theta  |   a  |   x  |   v  |   dt  | -  (y ) | - (-  (y )) | y + -1.0 | y + 0.0 | y + 1.0 | y + x | y + v | y + a | y + theta | y + dt |};
+}
+
+generator float g_v(float x, float y, float v, float a, float theta, float dt) {
+    return {| v |};
+}
+
+generator float g_a(float x, float y, float v, float a, float theta, float dt) {
+    return {| a |};
+}
+
+generator float g_theta(float x, float y, float v, float a, float theta, float dt) {
+    return {| -theta |   a  |   v  |   x  |   y  |   dt  | -  (theta ) | - (-  (theta )) | theta + -1.0 | theta + 0.0 | theta + 1.0 | theta + x | theta + y | theta + v | theta + a | theta + dt |};
+}
+
+generator float g_dt(float x, float y, float v, float a, float theta, float dt) {
+    return {| dt |};
+}
+
+
+generator float[6] g(float x, float y, float v, float a, float theta, float dt) {
+    return { g_x(x, y, v, a, theta, dt), g_y(x, y, v, a, theta, dt), g_v(x, y, v, a, theta, dt), g_a(x, y, v, a, theta, dt), g_theta(x, y, v, a, theta, dt), g_dt(x, y, v, a, theta, dt) };
+}
+
+harness void main(float x, float y, float v, float a, float theta, float dt) {
+  float[6] tempC = C(x, y, v, a, theta, dt);
+  float[6] lhs = h(tempC[0], tempC[1], tempC[2], tempC[3], tempC[4], tempC[5]);
+  float[6] tempG = g(x, y, v, a, theta, dt);
+  float[6] rhs = C(tempG[0], tempG[1], tempG[2], tempG[3], tempG[4], tempG[5]);
+  assert(lhs[0] == rhs[0]);
+  assert(lhs[1] == rhs[1]);
+  assert(lhs[2] == rhs[2]);
+  assert(lhs[3] == rhs[3]);
+  assert(lhs[4] == rhs[4]);
+  assert(lhs[5] == rhs[5]);
+}

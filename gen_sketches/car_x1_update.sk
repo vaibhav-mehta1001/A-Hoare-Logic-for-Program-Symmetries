@@ -1,0 +1,61 @@
+include "math.skh";
+
+float[9]  h(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) { return { (x  + 1.0), (y  + 1.0), v , a , u , phi , theta , L , dt  };}
+float[9]  C(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) { return { (( cos(theta )  * (v  * dt )) + x ), y , v , a , u , phi , theta , L , dt  };}
+
+generator float g_x(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| x + 1.0 | x + 1.0 |   y  |   v  |   a  |   phi  |   L  |   u  |   theta  |   dt  | (x  + 1.0) | - ((x  + 1.0)) | x + -1.0 | x + 0.0 | x + y | x + v | x + a | x + u | x + phi | x + theta | x + L | x + dt |};
+}
+
+generator float g_y(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| y + 1.0 | y + 1.0 |   v  |   a  |   phi  |   x  |   L  |   u  |   theta  |   dt  | (y  + 1.0) | - ((y  + 1.0)) | y + -1.0 | y + 0.0 | y + x | y + v | y + a | y + u | y + phi | y + theta | y + L | y + dt |};
+}
+
+generator float g_v(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| v |};
+}
+
+generator float g_a(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| a |};
+}
+
+generator float g_u(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| u |};
+}
+
+generator float g_phi(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| phi |};
+}
+
+generator float g_theta(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| theta |};
+}
+
+generator float g_L(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| L |};
+}
+
+generator float g_dt(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return {| dt |};
+}
+
+
+generator float[9] g(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+    return { g_x(x, y, v, a, u, phi, theta, L, dt), g_y(x, y, v, a, u, phi, theta, L, dt), g_v(x, y, v, a, u, phi, theta, L, dt), g_a(x, y, v, a, u, phi, theta, L, dt), g_u(x, y, v, a, u, phi, theta, L, dt), g_phi(x, y, v, a, u, phi, theta, L, dt), g_theta(x, y, v, a, u, phi, theta, L, dt), g_L(x, y, v, a, u, phi, theta, L, dt), g_dt(x, y, v, a, u, phi, theta, L, dt) };
+}
+
+harness void main(float x, float y, float v, float a, float u, float phi, float theta, float L, float dt) {
+  float[9] tempC = C(x, y, v, a, u, phi, theta, L, dt);
+  float[9] lhs = h(tempC[0], tempC[1], tempC[2], tempC[3], tempC[4], tempC[5], tempC[6], tempC[7], tempC[8]);
+  float[9] tempG = g(x, y, v, a, u, phi, theta, L, dt);
+  float[9] rhs = C(tempG[0], tempG[1], tempG[2], tempG[3], tempG[4], tempG[5], tempG[6], tempG[7], tempG[8]);
+  assert(lhs[0] == rhs[0]);
+  assert(lhs[1] == rhs[1]);
+  assert(lhs[2] == rhs[2]);
+  assert(lhs[3] == rhs[3]);
+  assert(lhs[4] == rhs[4]);
+  assert(lhs[5] == rhs[5]);
+  assert(lhs[6] == rhs[6]);
+  assert(lhs[7] == rhs[7]);
+  assert(lhs[8] == rhs[8]);
+}

@@ -1,0 +1,51 @@
+include "math.skh";
+
+float[7]  h(float x, float y, float z, float p, float r, float b, float dt) { return {  -  (x ),  -  (y ), z , p , r , b , dt  };}
+float[7]  C(float x, float y, float z, float p, float r, float b, float dt) { return { x , y , (z  + (dt  * (( -  (x ) * y ) + ( -  (b ) * z )))), p , r , b , dt  };}
+
+generator float g_x(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| -x |   dt  |   b  |   y  |   p  |   r  |   z  | -  (x ) | - (-  (x )) | x + -1.0 | x + 0.0 | x + 1.0 | x + y | x + z | x + p | x + r | x + b | x + dt |};
+}
+
+generator float g_y(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| -y |   dt  |   b  |   x  |   p  |   r  |   z  | -  (y ) | - (-  (y )) | y + -1.0 | y + 0.0 | y + 1.0 | y + x | y + z | y + p | y + r | y + b | y + dt |};
+}
+
+generator float g_z(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| z |};
+}
+
+generator float g_p(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| p |};
+}
+
+generator float g_r(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| r |};
+}
+
+generator float g_b(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| b |};
+}
+
+generator float g_dt(float x, float y, float z, float p, float r, float b, float dt) {
+    return {| dt |};
+}
+
+
+generator float[7] g(float x, float y, float z, float p, float r, float b, float dt) {
+    return { g_x(x, y, z, p, r, b, dt), g_y(x, y, z, p, r, b, dt), g_z(x, y, z, p, r, b, dt), g_p(x, y, z, p, r, b, dt), g_r(x, y, z, p, r, b, dt), g_b(x, y, z, p, r, b, dt), g_dt(x, y, z, p, r, b, dt) };
+}
+
+harness void main(float x, float y, float z, float p, float r, float b, float dt) {
+  float[7] tempC = C(x, y, z, p, r, b, dt);
+  float[7] lhs = h(tempC[0], tempC[1], tempC[2], tempC[3], tempC[4], tempC[5], tempC[6]);
+  float[7] tempG = g(x, y, z, p, r, b, dt);
+  float[7] rhs = C(tempG[0], tempG[1], tempG[2], tempG[3], tempG[4], tempG[5], tempG[6]);
+  assert(lhs[0] == rhs[0]);
+  assert(lhs[1] == rhs[1]);
+  assert(lhs[2] == rhs[2]);
+  assert(lhs[3] == rhs[3]);
+  assert(lhs[4] == rhs[4]);
+  assert(lhs[5] == rhs[5]);
+  assert(lhs[6] == rhs[6]);
+}

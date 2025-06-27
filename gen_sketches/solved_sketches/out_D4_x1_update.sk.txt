@@ -1,0 +1,81 @@
+SKETCH version 1.7.6
+Benchmark = test/sk/D4_x1_update.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*D4_x1_update.sk:4*/
+
+void C (float x, float y, float v, float a, float theta, float dt, ref float[6] _out)/*D4_x1_update.sk:4*/
+{
+  float _out_s12 = 0.0;
+  cos@math(theta, _out_s12);
+  _out = {(_out_s12 * (v * dt)) + x,y,v,a,theta,dt};
+  return;
+}
+/*D4_x1_update.sk:35*/
+
+void _main (float x, float y, float v, float a, float theta, float dt)/*D4_x1_update.sk:35*/
+{
+  float[6] tempC_s4 = {0.0,0.0,0.0,0.0,0.0,0.0};
+  C(x, y, v, a, theta, dt, tempC_s4);
+  float[6] lhs_s6 = {0.0,0.0,0.0,0.0,0.0,0.0};
+  h(tempC_s4[0], tempC_s4[1], tempC_s4[2], tempC_s4[3], tempC_s4[4], tempC_s4[5], lhs_s6);
+  float[6] rhs_s10 = {0.0,0.0,0.0,0.0,0.0,0.0};
+  C(-(y), x, v, a, theta + (1.5707963267948966), dt, rhs_s10);
+  assert ((lhs_s6[0]) == (rhs_s10[0])); //Assert at D4_x1_update.sk:40 (1)
+  assert ((lhs_s6[1]) == (rhs_s10[1])); //Assert at D4_x1_update.sk:41 (1)
+  assert ((lhs_s6[2]) == (rhs_s10[2])); //Assert at D4_x1_update.sk:42 (1)
+  assert ((lhs_s6[3]) == (rhs_s10[3])); //Assert at D4_x1_update.sk:43 (1)
+  assert ((lhs_s6[4]) == (rhs_s10[4])); //Assert at D4_x1_update.sk:44 (1)
+  assert ((lhs_s6[5]) == (rhs_s10[5])); //Assert at D4_x1_update.sk:45 (1)
+}
+/*D4_x1_update.sk:3*/
+
+void h (float x, float y, float v, float a, float theta, float dt, ref float[6] _out)/*D4_x1_update.sk:3*/
+{
+  float _out_s64 = 0.0;
+  sin@math(theta, _out_s64);
+  float _out_s66 = 0.0;
+  cos@math(theta, _out_s66);
+  _out = {(((-(dt)) * v) * _out_s64) + (-(y)),(((-(dt)) * v) * _out_s66) + x,v,a,theta + (1.5707963267948966),dt};
+  return;
+}
+/*D4_x1_update.sk:35*/
+
+void main__Wrapper (float x, float y, float v, float a, float theta, float dt)  implements main__WrapperNospec/*D4_x1_update.sk:35*/
+{
+  _main(x, y, v, a, theta, dt);
+}
+/*D4_x1_update.sk:35*/
+
+void main__WrapperNospec (float x, float y, float v, float a, float theta, float dt)/*D4_x1_update.sk:35*/
+{ }
+/* END PACKAGE ANONYMOUS*/
+/* BEGIN PACKAGE math*/
+package math{
+  /*math.skh:40*/
+  @Native("{_out = (float)v;}") 
+uninterp void _cast_int_float (int v, ref float _out)/*math.skh:40*/
+  /*math.skh:33*/
+  @Native("{_out = atanf(v);}") 
+uninterp void arctan (float v, ref float _out)/*math.skh:33*/
+  /*math.skh:17*/
+  @Native("{_out = cosf(v);}") 
+uninterp void cos (float v, ref float _out)/*math.skh:17*/
+  /*math.skh:51*/
+  @Native("{_out = expf(v);}") 
+uninterp void exp (float v, ref float _out)/*math.skh:51*/
+  /*math.skh:28*/
+  @Native("{_out = logf(v);}") 
+uninterp void log (float v, ref float _out)/*math.skh:28*/
+  /*math.skh:15*/
+  @Native("{_out = sinf(v);}") 
+uninterp void sin (float v, ref float _out)/*math.skh:15*/
+  /*math.skh:21*/
+  @Native("{_out = sqrtf(v);}") 
+uninterp void sqrt (float v, ref float _out)/*math.skh:21*/
+  /*math.skh:19*/
+  @Native("{_out = tanf(v);}") 
+uninterp void tan (float v, ref float _out)/*math.skh:19*/
+  /* END PACKAGE math*/
+}
+[SKETCH] DONE
+Total time = 1049

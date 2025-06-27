@@ -1,0 +1,78 @@
+SKETCH version 1.7.6
+Benchmark = test/sk/x1_update_gravity.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*x1_upda..ravity.sk:4*/
+
+void C (float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt, ref float[9] _out)/*x1_upda..ravity.sk:4*/
+{
+  _out = {f1,x1 + (v1 * dt),x2,v1,v2,m1,m2,G,dt};
+  return;
+}
+/*x1_upda..ravity.sk:47*/
+
+void _main (float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt)/*x1_upda..ravity.sk:47*/
+{
+  float[9] tempC_s7 = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+  C(f1, x1, x2, v1, v2, m1, m2, G, dt, tempC_s7);
+  float[9] lhs_s9 = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+  h(tempC_s7[0], tempC_s7[1], tempC_s7[2], tempC_s7[3], tempC_s7[4], tempC_s7[5], tempC_s7[6], tempC_s7[7], tempC_s7[8], lhs_s9);
+  float[9] rhs_s13 = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+  C(-(f1), x2, x1, v2, v1, m2, m1, G, dt, rhs_s13);
+  assert ((lhs_s9[0]) == (rhs_s13[0])); //Assert at x1_upda..ravity.sk:52 (1)
+  assert ((lhs_s9[1]) == (rhs_s13[1])); //Assert at x1_upda..ravity.sk:53 (1)
+  assert ((lhs_s9[2]) == (rhs_s13[2])); //Assert at x1_upda..ravity.sk:54 (1)
+  assert ((lhs_s9[3]) == (rhs_s13[3])); //Assert at x1_upda..ravity.sk:55 (1)
+  assert ((lhs_s9[4]) == (rhs_s13[4])); //Assert at x1_upda..ravity.sk:56 (1)
+  assert ((lhs_s9[5]) == (rhs_s13[5])); //Assert at x1_upda..ravity.sk:57 (1)
+  assert ((lhs_s9[6]) == (rhs_s13[6])); //Assert at x1_upda..ravity.sk:58 (1)
+  assert ((lhs_s9[7]) == (rhs_s13[7])); //Assert at x1_upda..ravity.sk:59 (1)
+  assert ((lhs_s9[8]) == (rhs_s13[8])); //Assert at x1_upda..ravity.sk:60 (1)
+}
+/*x1_upda..ravity.sk:3*/
+
+void h (float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt, ref float[9] _out)/*x1_upda..ravity.sk:3*/
+{
+  _out = {(0.0) - f1,x2 + (dt * v2),x1 + ((-(dt)) * v1),v2,v1,m2,m1,G,dt};
+  return;
+}
+/*x1_upda..ravity.sk:47*/
+
+void main__Wrapper (float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt)  implements main__WrapperNospec/*x1_upda..ravity.sk:47*/
+{
+  _main(f1, x1, x2, v1, v2, m1, m2, G, dt);
+}
+/*x1_upda..ravity.sk:47*/
+
+void main__WrapperNospec (float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt)/*x1_upda..ravity.sk:47*/
+{ }
+/* END PACKAGE ANONYMOUS*/
+/* BEGIN PACKAGE math*/
+package math{
+  /*math.skh:40*/
+  @Native("{_out = (float)v;}") 
+uninterp void _cast_int_float (int v, ref float _out)/*math.skh:40*/
+  /*math.skh:33*/
+  @Native("{_out = atanf(v);}") 
+uninterp void arctan (float v, ref float _out)/*math.skh:33*/
+  /*math.skh:17*/
+  @Native("{_out = cosf(v);}") 
+uninterp void cos (float v, ref float _out)/*math.skh:17*/
+  /*math.skh:51*/
+  @Native("{_out = expf(v);}") 
+uninterp void exp (float v, ref float _out)/*math.skh:51*/
+  /*math.skh:28*/
+  @Native("{_out = logf(v);}") 
+uninterp void log (float v, ref float _out)/*math.skh:28*/
+  /*math.skh:15*/
+  @Native("{_out = sinf(v);}") 
+uninterp void sin (float v, ref float _out)/*math.skh:15*/
+  /*math.skh:21*/
+  @Native("{_out = sqrtf(v);}") 
+uninterp void sqrt (float v, ref float _out)/*math.skh:21*/
+  /*math.skh:19*/
+  @Native("{_out = tanf(v);}") 
+uninterp void tan (float v, ref float _out)/*math.skh:19*/
+  /* END PACKAGE math*/
+}
+[SKETCH] DONE
+Total time = 891

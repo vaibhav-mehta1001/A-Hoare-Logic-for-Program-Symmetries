@@ -1,0 +1,61 @@
+include "math.skh";
+
+float[9]  h(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) { return { (0.0 - (f1 )), x2 , x1 , v2 , v1 , m2 , m1 , G , dt  };}
+float[9]  C(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) { return { f1 , x1 , x2 , v1 , (v2  - (((f1  / m2 ) * dt ))), m1 , m2 , G , dt  };}
+
+generator float g_f1(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| -f1 |};
+}
+
+generator float g_x1(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| x2 |   f1  |   v1  |   m1  |   x2  |   v2  |   dt  |   G  |   m2  | x2 | - (x2) | x1 + -1.0 | x1 + 0.0 | x1 + 1.0 | x1 + f1 | x1 + x2 | x1 + v1 | x1 + v2 | x1 + m1 | x1 + m2 | x1 + G | x1 + dt |};
+}
+
+generator float g_x2(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| x1 |   f1  |   v1  |   m1  |   v2  |   dt  |   G  |   x1  |   m2  | x1 | - (x1) | x2 + -1.0 | x2 + 0.0 | x2 + 1.0 | x2 + f1 | x2 + x1 | x2 + v1 | x2 + v2 | x2 + m1 | x2 + m2 | x2 + G | x2 + dt |};
+}
+
+generator float g_v1(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| -dt*f1/m2 + v2 |   f1  |   m1  |   x2  |   v2  |   dt  |   G  |   x1  |   m2  | v2 | - (v2) | v1 + -1.0 | v1 + 0.0 | v1 + 1.0 | v1 + f1 | v1 + x1 | v1 + x2 | v1 + v2 | v1 + m1 | v1 + m2 | v1 + G | v1 + dt |};
+}
+
+generator float g_v2(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| -dt*f1/m1 + v1 |   f1  |   v1  |   m1  |   x2  |   dt  |   G  |   x1  |   m2  | v1 | - (v1) | v2 + -1.0 | v2 + 0.0 | v2 + 1.0 | v2 + f1 | v2 + x1 | v2 + x2 | v2 + v1 | v2 + m1 | v2 + m2 | v2 + G | v2 + dt |};
+}
+
+generator float g_m1(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| m2 |   f1  |   v1  |   x2  |   v2  |   dt  |   G  |   x1  |   m2  | m2 | - (m2) | m1 + -1.0 | m1 + 0.0 | m1 + 1.0 | m1 + f1 | m1 + x1 | m1 + x2 | m1 + v1 | m1 + v2 | m1 + m2 | m1 + G | m1 + dt |};
+}
+
+generator float g_m2(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| m1 |   f1  |   v1  |   m1  |   x2  |   v2  |   dt  |   G  |   x1  | m1 | - (m1) | m2 + -1.0 | m2 + 0.0 | m2 + 1.0 | m2 + f1 | m2 + x1 | m2 + x2 | m2 + v1 | m2 + v2 | m2 + m1 | m2 + G | m2 + dt |};
+}
+
+generator float g_G(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| G |};
+}
+
+generator float g_dt(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return {| dt |};
+}
+
+
+generator float[9] g(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+    return { g_f1(f1, x1, x2, v1, v2, m1, m2, G, dt), g_x1(f1, x1, x2, v1, v2, m1, m2, G, dt), g_x2(f1, x1, x2, v1, v2, m1, m2, G, dt), g_v1(f1, x1, x2, v1, v2, m1, m2, G, dt), g_v2(f1, x1, x2, v1, v2, m1, m2, G, dt), g_m1(f1, x1, x2, v1, v2, m1, m2, G, dt), g_m2(f1, x1, x2, v1, v2, m1, m2, G, dt), g_G(f1, x1, x2, v1, v2, m1, m2, G, dt), g_dt(f1, x1, x2, v1, v2, m1, m2, G, dt) };
+}
+
+harness void main(float f1, float x1, float x2, float v1, float v2, float m1, float m2, float G, float dt) {
+  float[9] tempC = C(f1, x1, x2, v1, v2, m1, m2, G, dt);
+  float[9] lhs = h(tempC[0], tempC[1], tempC[2], tempC[3], tempC[4], tempC[5], tempC[6], tempC[7], tempC[8]);
+  float[9] tempG = g(f1, x1, x2, v1, v2, m1, m2, G, dt);
+  float[9] rhs = C(tempG[0], tempG[1], tempG[2], tempG[3], tempG[4], tempG[5], tempG[6], tempG[7], tempG[8]);
+  assert(lhs[0] == rhs[0]);
+  assert(lhs[1] == rhs[1]);
+  assert(lhs[2] == rhs[2]);
+  assert(lhs[3] == rhs[3]);
+  assert(lhs[4] == rhs[4]);
+  assert(lhs[5] == rhs[5]);
+  assert(lhs[6] == rhs[6]);
+  assert(lhs[7] == rhs[7]);
+  assert(lhs[8] == rhs[8]);
+}
